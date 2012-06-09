@@ -56,7 +56,7 @@ Known bugs
 
 Known bugs that hopefully will be squashed in future releases
 
-	* None atm
+	* Only MooTemplatr.Twitter is working atm, working on the others
 
 
 Notes
@@ -65,7 +65,6 @@ Notes
 Version 0.1
 
     * First version
-    * Only MooTemplatr.Twitter is working atm, working on the others
 
 
 Wish list
