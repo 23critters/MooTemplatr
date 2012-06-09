@@ -13,8 +13,8 @@ How to use
 Javascript snippet to initialize the class:
 
 	window.addEvent("domready", function() {
-		var TD = new MooTemplatr({
-			element: document.id("div#tweetdisplay"),
+		var Moo = new MooTemplatr({
+			element: document.id("div#display"),
 			username: "23critters"
 		});
 	});
