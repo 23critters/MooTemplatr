@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>MooTemplatr</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.4/mootools-yui-compressed.js"></script>
+<script type="text/javascript" src="mootools-more-1.4.0.1.js"></script>
+<script type="text/javascript" src="MooTemplatr.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+window.addEvent("domready", function() {
+	var t1 = new MooTemplatr.Twitter({
+		params: {
+            count: 1
+        },
+		element: "listtweet",
+		username: "23critters",
+        dateformat: "%H:%M",
+		template: "TwitterTemplate.html",
+        actions: {
+            "created_at": "formatdate"
+        }
+    });
+
+	var t2 = new MooTemplatr.Twitter({
+		element: "listtweet-2",
+		username: "23critters",
+		template: "TwitterTemplate.html",
+        params: {
+            count: 1
+        },
+        actions: {
+            "created_at": "formatdate",
+            "text": "linkify",
+            "user.url": "linkify"
+        }
+	});
+});
+//]]>
+</script>
+</head>
+<body>
+    <p><a href="http://mootools.net/more/8b71d9032491a52b5b31d4323243a5c3">Get the customized MooTools More-build here!</a></p>
+
+	<div id="listtweet"></div>
+	<div id="listtweet-2"></div>
+
+</body>
+</html>

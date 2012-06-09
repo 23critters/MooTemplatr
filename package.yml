@@ -1,0 +1,7 @@
+name: Tweet Display
+author: kunambi
+category: Widgets
+tags: [widget, twitter]
+current: v1.1
+copyright: "Thomas Kunambi, 23 Critters"
+description: Tweet Display is a nifty widget, written in MooTools framework, that allows you to pull information via Twitters API about a certain user. Presents the tweets in a UL-list. You may template the output however you want. However, please remember that the template's HTML is looped. All data is transfered in JSON/P.
