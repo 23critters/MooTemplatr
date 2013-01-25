@@ -12,22 +12,25 @@ How to use
 
 Javascript snippet to initialize the class:
 
-	window.addEvent("domready", function() {
-		var Moo = new MooTemplatr({
-			element: document.id("div#display"),
-			username: "23critters"
-		});
-	});
+	var t1 = new MooTemplatr.Twitter({
+		params: {
+            count: 3
+        },
+		element: "listtweet",
+		username: "23critters",
+        dateformat: "%H:%M",
+		template: "TwitterTemplate.html",
+        actions: {
+            "created_at": "formatdate"
+        }
+    });
 
 
 HTML snippet:
 
-	<div id="display">
+	<div id="listtweet">
 	</div>
 
-CSS selector to style the active navigation anchor, eg:
-
-	DIV#display {background-color: #ccc;}
 
 Options
 -----------------
@@ -40,6 +43,7 @@ Options
 	dateformat: (string) A model over how to format the printed date, more information at
 	    http://mootools.net/docs/more/Types/Date#Date:format | default: "%Y-%m-%d %H:%M:%S"
 
+    Please check source code for the various sub-classes' options.
 
 Methods
 -----------------

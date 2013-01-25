@@ -1,7 +1,7 @@
 name: MooTemplatr
 author: kunambi
 category: Widgets
-tags: [widget, twitter, template, vimeo, api, reddit, vimeo, youtube]
-current: v0.1
+tags: [widget, twitter, template, vimeo, api, reddit, vimeo, youtube, facebook]
+current: v1.0
 copyright: "Thomas Kunambi, 23 Critters"
 description: Tweet Display is a nifty widget, written in MooTools framework, that allows you to pull information via Twitters API about a certain user. Presents the tweets in a UL-list. You may template the output however you want. However, please remember that the template's HTML is looped. All data is transfered in JSON/P.
