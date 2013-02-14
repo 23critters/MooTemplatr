@@ -12,26 +12,38 @@ window.addEvent("domready", function() {
 		params: {
             count: 3
         },
-		element: "listtweet",
+		element: "listposts",
 		username: "23critters",
-        dateformat: "%H:%M",
 		template: "TwitterTemplate.html",
         actions: {
-            "created_at": "formatdate"
+            "text": "linkify"
         }
     });
 
 	var t2 = new MooTemplatr.Twitter({
-		element: "listtweet-2",
-		username: "23critters",
+		element: "listposts-2",
+		search: "from:twitter",
 		template: "TwitterTemplate.html",
         params: {
-            count: 1
+            count: 4
         },
+        dateformat: "%H:%M",
         actions: {
             "created_at": "formatdate",
-            "text": "linkify",
-            "user.url": "linkify"
+            "text": "linkify"
+        }
+	});
+
+	var t3 = new MooTemplatr.Reddit({
+		element: "listposts-3",
+		username: "neiltyson",
+		template: "RedditTemplate.html",
+        params: {
+            limit: 4
+        },
+        actions: {
+            "data.created_utc": "formatdate",
+            "data.body": "linkify"
         }
 	});
 });
@@ -41,8 +53,14 @@ window.addEvent("domready", function() {
 <body>
     <p><a href="http://mootools.net/more/8b71d9032491a52b5b31d4323243a5c3">Get the customized MooTools More-build here!</a></p>
 
-	<div id="listtweet"></div>
-	<div id="listtweet-2"></div>
+    <h1>Twitter (username)</h1>
+	<div id="listposts"></div>
+
+    <h1>Twitter (search)</h1>
+	<div id="listposts-2"></div>
+
+    <h1>Reddit</h1>
+	<div id="listposts-3"></div>
 
 </body>
 </html>

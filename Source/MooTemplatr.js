@@ -42,7 +42,8 @@ var MooTemplatr = new Class({
         actions: {},
         dateformat: "%Y-%m-%d %H:%M:%S",
         params: {},
-        template: ""
+        template: "",
+        cachetime: 60 * 60 * 24 * 7
     },
     /**
      @constructor
@@ -123,11 +124,14 @@ var MooTemplatr = new Class({
                 }
             };
 
-        if (!this.in_cache(sHTMLKey)) {
+        var dCache = Date.parse(sessionStorage.getItem("cache")),
+            iCacheDiff = new Date().diff(dCache, "second");
+
+        if (!this.in_cache(sHTMLKey) || iCacheDiff < 0) {
             reqTmpl.send();
         }
 
-        if (!this.in_cache(sJSONKey)) {
+        if (!this.in_cache(sJSONKey) || iCacheDiff < 0) {
             reqJson.send();
         }
 
@@ -200,6 +204,7 @@ var MooTemplatr = new Class({
      @since 1.0
      */
     _set_cache: function(sURL, sJSON) {
+        sessionStorage.setItem("cache", new Date().increment("second", this.options.cachetime));
         sessionStorage.setItem(sURL, sJSON);
     },
     /**
@@ -242,7 +247,7 @@ var MooTemplatr = new Class({
      */
     formatdate: function(sDate, sFormat) {
         var sNewFormat = sFormat||this.options.dateformat,
-            dDate = Date.parse(sDate);
+            dDate = Date.parse(sDate||new Date());
         return dDate.format(sNewFormat);
     }
 });
@@ -264,7 +269,8 @@ MooTemplatr.Facebook = new Class({
             center: "59.323009, 18.069798", // latitude and longitude, used with type=places or type=location
             distance: "1000", // distance from center, used with type=places or type=location
             limit: 5 // The number of posts to return. Is not supported with type=post
-        }
+        },
+        actions: {}
     },
     _setup: function() {
         Object.append(this.oSettings.query, {"q": this.options.search});
@@ -286,18 +292,30 @@ MooTemplatr.Twitter = new Class({
     Extends: MooTemplatr,
     options: {
         apiURL: "http://api.twitter.com/1/statuses/user_timeline/",
+        searchURL: "http://search.twitter.com/search.json",
         username: "23critters",
-        actions: {
-            "text": "linkify",
-            "created_at": "formatdate"
-        },
+        search: "",
         params: {
-            count: 5 // The number of tweets to return.
-        }
+            count: 5, // The number of tweets to return, the maximum is 50
+            result_type: "mixed" // Allowed values: mixed: Include both popular and real time results. recent: return only the most recent results. popular: return only the most popular results.
+        },
+        actions: {}
     },
     _setup: function() {
-        this.oSettings.API = this.options.apiURL + this.options.username + ".json";
+        if (this.options.search) {
+            Object.append(this.oSettings.query, {"q": this.options.search, "rpp": this.options.params.count});
+            this.oSettings.API = this.options.searchURL;
+        } else {
+            this.oSettings.API = this.options.apiURL + this.options.username + ".json";
+        }
         this._fetch_data();
+    },
+    _manipulateData: function(sHTML, oJSON) {
+        if (this.options.search) {
+            this._parse(sHTML, oJSON.results)
+        } else {
+            this._parse(sHTML, oJSON);
+        }
     },
     /**
      @public
@@ -328,16 +346,14 @@ MooTemplatr.Tumblr = new Class({
         apiURL: ".tumblr.com/api/read/json",
         username: "23critters",
         params: {
-            num: 5, // The number of posts to return. The default is 20, the maximum is 50
+            num: 5, // The number of posts to return, the maximum is 50
             start: 0, // The post offset to start from.
             type: "all", // The type of posts to return. Allowed values: all, text, quote, photo, link, chat, video, or audio.
             id: null, // A specific post ID to return. Use instead of start, num, or type (set these to falsies).
             filter: "text", // Allowed values: text - Plain text, none - No post-processing. Output exactly what the author entered.
             search: "" // Search for posts with this query.
         },
-        actions: {
-            "url-with-slug": "linkify"
-        }
+        actions: {}
     },
     _setup: function() {
         this.oSettings.API = "http://" + this.options.username + this.options.apiURL;
@@ -363,9 +379,7 @@ MooTemplatr.Youtube = new Class({
         params: {
             "max-results": 5 // default 1
         },
-        actions: {
-            "updated": "formatdate"
-        }
+        actions: {}
     },
     _setup: function() {
         Object.append(this.oSettings.query, {"q": this.options.username, "v": 2, "alt": "jsonc"});
@@ -391,9 +405,7 @@ MooTemplatr.Vimeo = new Class({
         type: "videos", // Allowed values: info, videos, likes, appears_in, all_videos, subscriptions, albums, channels, groups
         username: "23critters",
         params: {},
-        actions: {
-            "upload_date": "formatdate"
-        }
+        actions: {}
     },
     _setup: function() {
         this.oSettings.API = this.options.apiURL + this.options.username + "/" + this.options.type + ".json";
@@ -418,7 +430,8 @@ MooTemplatr.Reddit = new Class({
             limit: 5, // default 25
             sort: "new", // Allowed values: hot, new, top and controversial
             t: "all" // Allowed values: hour, day, week, month, year and all
-        }
+        },
+        actions: {}
     },
     _setup: function() {
         Object.append(this.oSettings.query, {"jsonp": "Request.JSONP.request_map.request_0"});
@@ -427,5 +440,10 @@ MooTemplatr.Reddit = new Class({
     },
     _manipulateData: function(sHTML, oJSON) {
         this._parse(sHTML, oJSON.data.children);
+    },
+    formatdate: function(sDate, sFormat) {
+        var sNewFormat = sFormat||this.options.dateformat,
+            dDate = Date.parse(sDate * 1000);
+        return dDate.format(sNewFormat);
     }
 });
